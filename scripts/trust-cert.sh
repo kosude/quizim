@@ -6,6 +6,10 @@
 #                                                                                 #
 ###################################################################################
 
+# This is a convenience script to trust the necessary ports on localhost to run the
+# Quizim web app locally on your machine, for development purposes. Review this
+# script to make sure the paths line up with your setup, and run at your own risk!
+
 set -e
 
 cd $HOME || exit
