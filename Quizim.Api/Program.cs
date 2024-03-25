@@ -1,25 +1,53 @@
-var builder = WebApplication.CreateBuilder(args);
+/*
+ *   Copyright (c) 2024 Jack Bennett.
+ *   All Rights Reserved.
+ *
+ *   See the LICENCE file for more information.
+ */
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Quizim.Api.Conventions;
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+namespace Quizim.Api
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            WebApplication app = BuildApp(args);
+            ConfigApp(ref app);
+
+            app.Run();
+        }
+
+        static WebApplication BuildApp(string[] args)
+        {
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddControllers(o =>
+            {
+                o.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+            });
+
+            return builder.Build();
+        }
+
+        static void ConfigApp(ref WebApplication app)
+        {
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseAuthorization();
+            app.UseHttpsRedirection();
+
+            app.MapControllers();
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.Run();
