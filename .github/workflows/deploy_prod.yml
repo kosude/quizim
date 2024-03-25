@@ -57,14 +57,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0F24023426E845AEA4047B7BA6E90B74 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3E1FD85A546C473989E0632CCDB3328B }}
 
-      - name: Deploy API to app service virtual directory
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: "quizim"
-          slot-name: "Production"
-          package: "./asp-quizim-api"
-          target-path: "/home/site/wwwroot/api"
-
       - name: Deploy frontend to app service root
         id: deploy-frontend
         uses: azure/webapps-deploy@v3
@@ -72,3 +64,11 @@ jobs:
           app-name: "quizim"
           slot-name: "Production"
           package: "./asp-quizim-frontend"
+
+      - name: Deploy API to app service virtual directory
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "quizim"
+          slot-name: "Production"
+          package: "./asp-quizim-api"
+          target-path: "/home/site/wwwroot/api"
