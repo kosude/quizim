@@ -26,13 +26,13 @@ jobs:
         run: dotnet publish -c Release
 
       - name: Upload API artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: asp-quizim-api
           path: Quizim.Api/bin/Release/net8.0/publish
 
       - name: Upload frontend artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: asp-quizim-frontend
           path: Quizim.Frontend/bin/Release/net8.0/publish
@@ -48,25 +48,26 @@ jobs:
 
     steps:
       - name: Download artifacts from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_06D7CDF4956547D2A44C1C7629FDEB98 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0F24023426E845AEA4047B7BA6E90B74 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3E1FD85A546C473989E0632CCDB3328B }}
 
       - name: Deploy API to app service virtual directory
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: "quizim"
           slot-name: "Production"
           package: "./asp-quizim-api"
+          target-path: "/home/site/wwwroot/api"
 
       - name: Deploy frontend to app service root
         id: deploy-frontend
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: "quizim"
           slot-name: "Production"
